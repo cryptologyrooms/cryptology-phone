@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+    <board type="Arduino Nano" name="Calibration Box"> <info>An ethernet controlled switch puzzle</info>
+
+    <devices>
+        <device name="MT8870" type="MT8870">
+            <setting id="code_pins" name="" value="3,4,5,6"/>
+            <setting id="trigger_pin" name="" value="7"/>
+        </device>
+
+        <device name="HookInput" type="Debounced Input">
+            <setting id="pin" name="Input" value="7"/>
+            <setting id="debounce_time" value="50"/>
+            <setting id="pullup" value="true"/>
+        </device>
+
+        <device name="GMInputs" type="Debounced Input" count="3">
+            <setting id="pin" name="Input" values="7|8|9"/>
+            <setting id="debounce_time" all_values="50"/>
+            <setting id="pullup" all_values="true"/>
+        </device>
+    </devices>
+
+    <parameters>
+        <parameter name="CorrectNumber" type="String">
+            <setting id="reset_value" value="00000000000"/>
+            <setting id="length" value="12"/>
+            <setting id="use_eeprom" value="true"/>
+        </parameter>
+    </parameters>
+
+    <modules>
+        <module>Buffer</module>
+    </modules>
+
+    <custom_code>
+        <file>application.cpp</file>
+        <file>media.cpp</file>
+        <file>media.h</file>
+    </custom_code>
+
+    <defines>
+        <define>N_DIGITS 32</define>
+    </defines>
+
+    <logging>
+        <log_module>APPLICATION</log_module>
+    </logging>
+
+    <raat protocol="url"></raat>
+</board>
