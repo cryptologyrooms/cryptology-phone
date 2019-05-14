@@ -4,8 +4,8 @@
 
     <devices>
         <device name="MT8870" type="MT8870">
-            <setting id="code_pins" name="" value="3,4,5,6"/>
-            <setting id="trigger_pin" name="" value="7"/>
+            <setting id="code_pins" name="" value="2,3,4,5"/>
+            <setting id="trigger_pin" name="" value="6"/>
         </device>
 
         <device name="HookInput" type="Debounced Input">
@@ -14,8 +14,8 @@
             <setting id="pullup" value="true"/>
         </device>
 
-        <device name="GMInputs" type="Debounced Input" count="3">
-            <setting id="pin" name="Input" values="7|8|9"/>
+        <device name="GMInputs" type="Debounced Input" count="4">
+            <setting id="pin" name="Input" values="8|9|10|11"/>
             <setting id="debounce_time" all_values="50"/>
             <setting id="pullup" all_values="true"/>
         </device>
@@ -29,6 +29,10 @@
         </parameter>
     </parameters>
 
+    <libraries>
+        <library>SoftwareSerial</library>
+    </libraries>
+
     <modules>
         <module>Buffer</module>
     </modules>
@@ -41,6 +45,8 @@
 
     <defines>
         <define>N_DIGITS 32</define>
+        <define>MEDIA_TX 10</define>
+        <define>MEDIA_RX 11</define>
     </defines>
 
     <logging>
