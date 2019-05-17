@@ -12,7 +12,7 @@ static SoftwareSerial s_serialport(MEDIA_RX, MEDIA_TX);
 
 /* Public Functions */
 
-void media_begin()
+void media_setup()
 {
 	s_serialport.begin(115200);
 }

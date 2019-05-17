@@ -128,6 +128,8 @@ void raat_custom_setup(const raat_devices_struct& devices, const raat_params_str
 {
     (void)devices;
     (void)params;
+
+    media_setup();
 }
 
 void raat_custom_loop(const raat_devices_struct& devices, const raat_params_struct& params)

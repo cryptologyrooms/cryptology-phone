@@ -11,6 +11,7 @@ enum tracks
 	TRACK_CUSTOM_3 = 5,
 };
 
+void media_setup();
 void media_play(uint8_t track_number);
 void media_stop();
 
