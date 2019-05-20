@@ -1,6 +1,11 @@
 <?xml version="1.0"?>
 
-    <board type="Arduino Nano" name="Calibration Box"> <info>An ethernet controlled switch puzzle</info>
+    <board type="Arduino Nano" name="Phone Interface">
+
+    <info>
+        An interface to a DTMF decoder and OGG player
+        for behaving like a "phone exchange"
+    </info>
 
     <devices>
         <device name="MT8870" type="MT8870">
@@ -9,13 +14,28 @@
         </device>
 
         <device name="HookInput" type="Debounced Input">
-            <setting id="pin" name="Input" value="7"/>
+            <setting id="pin" name="Input" value="A5"/>
             <setting id="debounce_time" value="50"/>
             <setting id="pullup" value="true"/>
         </device>
 
+        <device name="MediaReset" type="Digital Output">
+            <setting id="pin" name="Output" value="7"/>
+            <setting id="startup_state" value="LOW"/>
+        </device>
+
+        <device name="GMStatusLED" type="Digital Output">
+            <setting id="pin" name="Output" value="A3"/>
+            <setting id="startup_state" value="LOW"/>
+        </device>
+
+        <device name="MediaTrigger" type="Digital Output" count="6">
+            <setting id="pin" name="Output" values="8|9|10|11|12|13"/>
+            <setting id="startup_state" all_values="HIGH"/>
+        </device>
+
         <device name="GMInputs" type="Debounced Input" count="4">
-            <setting id="pin" name="Input" values="8|9|10|11"/>
+            <setting id="pin" name="Input" values="A0|A1|A2|A3"/>
             <setting id="debounce_time" all_values="50"/>
             <setting id="pullup" all_values="true"/>
         </device>
@@ -35,6 +55,7 @@
 
     <modules>
         <module>Buffer</module>
+        <module>Task</module>
     </modules>
 
     <custom_code>

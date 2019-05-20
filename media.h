@@ -11,8 +11,9 @@ enum tracks
 	TRACK_CUSTOM_3 = 5,
 };
 
-void media_setup();
-void media_play(uint8_t track_number);
-void media_stop();
+void media_setup(const raat_devices_struct& devices);
+void media_play(const raat_devices_struct& devices, uint8_t track_number);
+void media_stop(const raat_devices_struct& devices);
+void media_tick(const raat_devices_struct& devices);
 
 #endif

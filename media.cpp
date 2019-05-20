@@ -4,45 +4,71 @@
 
 #include "raat.hpp"
 
+#include "raat-oneshot-timer.hpp"
+#include "raat-oneshot-task.hpp"
+#include "raat-task.hpp"
+
 #include "media.h"
 
 /* Local Variables */
 
-static SoftwareSerial s_serialport(MEDIA_RX, MEDIA_TX);
+static const uint8_t N_TRIGGERS = 6;
+static const uint8_t RESET_TIMER = N_TRIGGERS;
+static uint8_t s_trigger_timers[N_TRIGGERS+1] = {0}; // Last timer is for reset
+
+
+/* Private Functions */
+
+static void media_task_fn(RAATTask& this_task, void * pTaskData)
+{
+	(void)this_task;
+	(void)pTaskData;
+
+	raat_devices_struct * pDevices = (raat_devices_struct*)pTaskData;
+    for (uint8_t tmr = 0; tmr<N_TRIGGERS; tmr++)
+    {
+    	if (s_trigger_timers[tmr])
+    	{
+    		s_trigger_timers[tmr]--;
+    		if (s_trigger_timers[tmr] == 0)
+    		{
+    			pDevices->pMediaTrigger[tmr]->set(true);
+    		}
+    	}
+    }
+
+   	if (s_trigger_timers[RESET_TIMER])
+	{
+		s_trigger_timers[RESET_TIMER]--;
+		if (s_trigger_timers[RESET_TIMER] == 0)
+		{
+			pDevices->pMediaReset->tristate();
+    	}
+    }
+}
+
+static RAATTask s_media_task(10, media_task_fn);
 
 /* Public Functions */
 
-void media_setup()
+void media_setup(const raat_devices_struct& devices)
 {
-	s_serialport.begin(115200);
+	media_stop(devices);
 }
 
-void media_play(uint8_t track_number)
+void media_play(const raat_devices_struct& devices, uint8_t track_number)
 {
-	switch(track_number)
-	{
-	case TRACK_DIALTONE:
-		s_serialport.print("Pdialtone.ogg\n");
-		break;
-	case TRACK_WRONG_NUMBER:
-		s_serialport.print("Punknownnumber.ogg\n");
-		break;
-	case TRACK_CORRECT_NUMBER:
-		s_serialport.print("Pcorrectnumber.ogg\n");
-		break;
-	case TRACK_CUSTOM_1:
-		s_serialport.print("Pcustom1.ogg\n");
-		break;
-	case TRACK_CUSTOM_2:
-		s_serialport.print("Pcustom2.ogg\n");
-		break;
-	case TRACK_CUSTOM_3:
-		s_serialport.print("Pcustom3.ogg\n");
-		break;
-	}
+	devices.pMediaTrigger[track_number]->set(false);
+	s_trigger_timers[track_number] = 15;
 }
 
-void media_stop()
+void media_stop(const raat_devices_struct& devices)
 {
-	s_serialport.print("q\n");
+	devices.pMediaReset->set(false);
+	s_trigger_timers[RESET_TIMER] = 2;
+}
+
+void media_tick(const raat_devices_struct& devices)
+{
+	s_media_task.run((void*)&devices);
 }
