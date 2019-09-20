@@ -86,17 +86,28 @@ static void handle_dialtone(const raat_devices_struct& devices, bool& dialtone_p
 
 static void handle_dialled_digits(const raat_devices_struct& devices, const raat_params_struct& params, RAATBuffer& dialled)
 {
+    static unsigned long s_last_press_time = 0U;
+
     if (s_accept_new_digits)
     {
         uint8_t new_digit = devices.pMT8870->get(true);
         if (new_digit != NO_PRESS_CHAR)
         {
-            raat_logln_P(LOG_APP, PSTR("New digit %c"), new_digit);
-            dialled.writeChar(new_digit);
-            if (dialled.length() == PHONE_NUMBER_LENGTH)
+            // Allow some "debounce"
+            if (millis() > (s_last_press_time + 100))
             {
-                raat_logln_P(LOG_APP, PSTR("Handling number %s"), dialled.c_str());
-                handle_new_dialled_number(devices, dialled, params);
+                s_last_press_time = millis();
+                raat_logln_P(LOG_APP, PSTR("New digit %c"), new_digit);
+                dialled.writeChar(new_digit);
+                if (dialled.length() == PHONE_NUMBER_LENGTH)
+                {
+                    raat_logln_P(LOG_APP, PSTR("Handling number %s"), dialled.c_str());
+                    handle_new_dialled_number(devices, dialled, params);
+                }
+            }
+            else
+            {
+                raat_logln_P(LOG_APP, PSTR("Reject digit %c"), new_digit);
             }
         }
     }
